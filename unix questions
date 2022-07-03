@@ -32,6 +32,8 @@ else
 echo "not exists"
 
 fi
+
+
 Q 3) Write a shell script that deletes all lines containing a specified word in one or more files supplied as arguments to it.
 
 Sol: 
