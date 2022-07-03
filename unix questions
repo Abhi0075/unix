@@ -5,7 +5,7 @@ Sol:     echo “Enter the file name to convert”
 	then
 	echo “file exist”
 	echo 
-	tr “[a-z]””[A-Z]” < $fname
+	tr “[a-z]” "[A-Z]” < $fname
             else
             echo “File not exist”
 	Fi
