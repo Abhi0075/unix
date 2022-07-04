@@ -1,0 +1,112 @@
+
+#question 2 labcycle
+#!/bin/sh
+ echo Enter dir1
+ read d1
+ echo Enter dir2
+ read d2
+ cd $d1
+ ls > list1.txt
+ cd ..
+ cd $d2
+ ls > list2.txt
+ cd ..
+ cd $d1
+ for i in `cat list1.txt`
+ do
+         cd ..
+         cd $d2
+         if grep "$i" list2.txt
+         then
+                 rm $i
+         fi
+         cd ..
+         cd $d1
+ done
+
+#-------------------------------------------------------------------------
+
+#question 5 labcycle 
+echo Enter file
+read f
+echo Enter pattern
+read pat
+grep "$pat" $f
+
+#-----------------------------------------------------------------------
+
+#question 6 on labcycle
+echo Enter the username
+read user
+cd $HOME
+ls > lsd.txt
+cut -d " " -f 1 lsd.txt > tem
+grep $user tem
+if [ $? -eq 0 ]
+then
+        echo User exists
+fi
+
+#------------------------------------------------------------
+
+#question 8 labcycle
+a=1
+while [ $a -eq 1 ]
+do
+        echo Enter itemcode and name
+        read code
+        read name
+        echo $code $name >> item.txt
+        echo Enter the value 1 to continue
+        read a
+done
+cat item.txt
+
+#---------------------------------------------------------------------------
+
+#question 9 labcycle
+if echo $1 | egrep -q '^[0-9]+$';then
+        echo Valid code
+else
+        echo Invaid code
+        exit
+fi
+if echo $2 | egrep -q '^[a-zA-Z]+$' ; then
+        echo Valid desgination
+else
+        echo Invalid desgination
+        exit
+fi
+echo $1 $2 >> desig.list
+echo Data added successfully
+cat desig.list
+
+#--------------------------------------------------------------------------------
+#question 10 labcycle
+echo Enter the directory
+read d1
+echo ENter the pattern
+read pat
+cd $d1
+ls > data2.txt
+while read line
+do
+        grep "$pat" $line
+done<data2.txt
+
+#------------------------------------------------------------------------
+#question 11 on labcycle
+while read line
+do
+        echo $line > tempor
+        v=$(cut -d " " -f 4 tempor)
+        if [ $v -gt 60000 ]
+        then
+                DA=$(echo $v*0.25|bc)
+        else
+                DA=$(echo $v*0.30|bc)
+        fi
+        HRA=$(echo $v*0.10|bc)
+        gross=$(echo $v+$DA+$HRA|bc)
+        echo $line $DA $HRA $gross
+done<emp.list
