@@ -1,0 +1,192 @@
+LAB PROGRAMS
+1.Write a shell script to compare two files, find common between two files and difference between two files. Write a shell script using pipe to list the first five largest files in the current directory.
+#! /bin/sh
+if [ $# -ne 2]
+then
+    echo Argument count doesn’t match
+    exit
+fi
+if [! -f $1]
+then
+    echo $1 does not exist
+    exit
+fi
+if [ ! -f $2 ]
+then
+    echo $2 does not exist
+    exit
+fi
+cmp $1 $2
+if [ $? -eq 0 ]
+then
+    echo Compare command executed successfully
+fi
+echo Common between the files is
+comm $1 $2
+if [ $? -eq 0 ]
+then
+    echo Common command executed successfully
+fi
+echo Difference between files is
+diff $1 $2
+if [ $? -eq 0 ]
+then
+     echo Difference command executed successfully
+fi
+echo The five largest files among the current dircetory are
+ls -l | sort -n -k 5 | tail -5
+
+2.Write a shell code that accepts two directory names, and deletes those files in bar2 which are identical to their namesakes in bar1.
+#!/bin/sh
+cd $1
+ls>list1.lst
+cd ..
+cd $2
+ls>list2.lst
+cd ..
+cd $1
+for word in `cat list1.lst`
+do
+cd ..
+cd $2
+grep "$word" "list2.lst"
+if [ $? -eq 0 ]
+then
+rm $word
+fi
+cd ..
+cd $1
+done
+
+3.Write a shell script to know the size of individual files, permissions, existence of link and filename. Display only these attributes.
+ set `ls -l`
+echo $7 $3 $4 $11
+
+4.Consider the emp.lst file. Write a shell script to display name and date of join of employees who are managers and salary greater than INR 60000.
+#!/bin/sh
+grep "manager" emp.lst>temp
+while read line
+do
+echo $line>temporary
+v=$(cut -d ' ' -f 5 temporary)
+if [ $v -gt 60000 ]
+then
+cut -d ' ' -f 1,2 temporary>emp1
+cat emp1
+fi
+done<temp
+
+5.Write a shell script to read a filename and patterns as variables and search the pattern in given file. Display suitable message if wrong entries are made.
+#!/bin/sh
+echo Enter the filename
+read f
+echo Enter the pattern to be searched
+read pat
+if [ ! -f $f ]
+then
+	echo File does not exist
+	exit
+fi
+grep "$pat" $f
+if [ $? -eq 0 ]
+then
+	echo Command executed successfully
+else
+	echo Command failed
+fi
+
+6.Write an interactive shell script using variables to check the existence of a particular user login account. Display suitable messages if wrong entries are made.
+#! /bin/sh
+echo Enter the name to be searched
+read l
+cd $HOME
+ls > list1.txt
+cut -d " " -f 1 list1.txt > loginname
+grep $l loginname
+if [ $? -eq 0]
+then
+	echo User exists
+else
+	echo Not exists
+fi
+
+7.Design a menu to display different shell commands. Provide the user the choice to execute different shell commands.
+#!/bin/sh
+echo 1.who 2.whoami 3.date 4.ls -l 5.exit
+echo Enter the choice
+read choice
+case $choice in
+        1)who;;
+        2)whoami;;
+        3)date;;
+        4)ls -l;;
+        5)exit;;
+        *)echo Invalid entry
+esac
+
+8.Write an interactive code to accept a list of items and itemcode and append the itemcode and itemname in a file named item.txt.
+#! /bin/sh
+echo set y as 1
+read y
+while [ $y -eq 1]
+do
+echo "enter the item:"
+read item
+echo "enter the itemcode:"
+read itemcode
+echo $item $itemcode >> item.txt
+echo "enter 1 if you want to enter item or 0 if you don’t want"
+read y
+done
+cat item.txt
+
+
+9.Write a shell script to accept a designation code and its description from terminal and perform validation and then add an entry to file desig.lst. The designation code should be numeric only and designation description should be alphabetical only.
+#! /bin/sh
+if echo $1 | egrep -q '^[0-9]+$’; then
+	echo Valid code
+else
+	echo Invalid code...Code must be numeric
+	exit
+fi
+if echo $2 | egrep -q '^[a-zA-Z]+$' ; then
+	echo Valid designation
+else
+	echo Invalid code...Designation must contain alphabets
+	exit
+fi
+echo $1 $2 >> desig.list
+echo Data added successfully
+cat desig. list
+
+10.Write a shell script that searches for a pattern in all the files in the directory path specified.
+#! /bin/sh
+echo "enter the directory path"
+read path
+echo "enter to pattern to be searched"
+read pat
+cd $path
+ls > just
+for word in `cat just`
+do
+grep "$pat" $word
+done
+
+11.Write a script to calculate and display the DA, HRA and gross salary of all the employees in emp.lst. Assume DA 25% for those having salary > INR 60000 and 30% for others. HRA is 10% of basic.
+#! /bin/sh
+while read line
+do
+	echo $line > tempo
+	v=$(cut -d ' ' -f 5 tempo)
+	echo $v
+	if [ $v -gt 60000]
+	then
+		da=$(echo $v*0.25 | bc)
+	else
+		da=$(echo $v*0.30 | bc)
+	fi
+	hra=$(echo $v*0.10 | bc)
+	gs=$(echo $da+$hra+$v | bc)
+	echo $line $da $hra $gs
+done < emp.list
+
